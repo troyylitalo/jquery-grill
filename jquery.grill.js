@@ -133,7 +133,9 @@
 
       this.$player.coordinates = this.$previewHolder.position();
       this.$previewHolder.previousPosition = this.getQuadrantPosition(this.$player.coordinates);
+      this.$previewHolder.startPosition = this.$previewHolder.previousPosition;
 
+      log('Begin at:' + this.indexForPosition(this.$previewHolder.previousPosition))
       // initial absolute position for dragged object
       // otherwise it will jump to 0,0
       this.$player.css({
@@ -182,16 +184,21 @@
     * @param {Object} A prepared ui object.
     */
     fn.on_stop_drag = function(event, ui) {
-      var y = this.indexForPosition(this.$player.previousPosition),
-      x = this.getPlayerIndex();
-log('y:' + y + ' x:' + x);
+      // TODO: fix this up a bit more
+      // there is probably still big in here
+      var previous = this.indexForPosition(this.$previewHolder.startPosition),
+      current = this.indexForPosition(this.$previewHolder.previousPosition),
+      temp = null;
+
+      log('previous:' + previous + ' now:' + current);
+      // remove from previous location
+      temp = this.$widgets.splice(previous, 1)[0];
+      this.$widgets.splice(current, 0, temp);
+
       this.$player.removeClass('dtm-panel-inmotion').removeAttr('style');
       this.$previewHolder.replaceWith(this.$player);
 
-      // TODO: update position inside array
-      // A[x] = A.splice(y, 1, A[x])[0];
-      this.$widgets[x] = this.$widgets.splice(y, 1, this.$widgets[x])[0];
-log(this.$widgets)
+      log(this.$widgets)
       if (this.options.draggable.stop) {
         this.options.draggable.stop.call(this, event, ui);
       }
