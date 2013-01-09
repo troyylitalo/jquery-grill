@@ -135,7 +135,7 @@
       this.$previewHolder.previousPosition = this.getQuadrantPosition(this.$player.coordinates);
       this.$previewHolder.startPosition = this.$previewHolder.previousPosition;
 
-      log('Begin at:' + this.indexForPosition(this.$previewHolder.previousPosition))
+      //log('Begin at:' + this.indexForPosition(this.$previewHolder.previousPosition))
       // initial absolute position for dragged object
       // otherwise it will jump to 0,0
       this.$player.css({
