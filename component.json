@@ -3,6 +3,6 @@
   "version": "0.0.1",
   "repository": {
     "type": "git",
-    "url": "git@192.168.24.81:peter-pajchl/jquery-grill.git"
+    "url": "https://github.com/peterpajchl/jquery-grill.git"
   }
 }

@@ -82,6 +82,7 @@
       }
     }
 
+
     /**
     * Make widgets draggable.
     *
@@ -123,8 +124,7 @@
     */
     fn.on_start_drag = function(event, ui) {
 
-      var gridClass = this.getGridClass(ui),
-          playerIndex = this.$player.index();
+      var gridClass = this.getGridClass(ui);
 
       this.$player.addClass('dtm-panel-inmotion');
 
@@ -134,6 +134,8 @@
       this.$player.coordinates = this.$previewHolder.position();
       this.$previewHolder.previousPosition = this.getQuadrantPosition(this.$player.coordinates);
 
+      // initial absolute position for dragged object
+      // otherwise it will jump to 0,0
       this.$player.css({
         top: this.$player.coordinates.top,
         left: this.$player.coordinates.left
@@ -154,18 +156,15 @@
     */
     fn.on_drag = function(event, ui) {
 
-      var previousPos = this.$previewHolder.previousPosition,
-          currentPos = this.getQuadrantPosition(ui.position);
-
       //break if dragstop has been fired
       if (this.$player === null) {
         return false;
       }
 
-      // compare quadrants previous vs current
-      // TODO: and if the current positon is beyond last or first element
+      var previousPos = this.$previewHolder.previousPosition,
+          currentPos = this.getQuadrantPosition(ui.position);
+
       if (previousPos.row != currentPos.row || previousPos.col != currentPos.col) {
-        // quadrant changed, update placeholder's position
         this.relocatePlaceholderToPosition(currentPos);
       }
 
@@ -183,17 +182,22 @@
     * @param {Object} A prepared ui object.
     */
     fn.on_stop_drag = function(event, ui) {
+      var y = this.indexForPosition(this.$player.previousPosition),
+      x = this.getPlayerIndex();
+log('y:' + y + ' x:' + x);
+      this.$player.removeClass('dtm-panel-inmotion').removeAttr('style');
+      this.$previewHolder.replaceWith(this.$player);
 
-        this.$player.removeClass('dtm-panel-inmotion').removeAttr('style');
+      // TODO: update position inside array
+      // A[x] = A.splice(y, 1, A[x])[0];
+      this.$widgets[x] = this.$widgets.splice(y, 1, this.$widgets[x])[0];
+log(this.$widgets)
+      if (this.options.draggable.stop) {
+        this.options.draggable.stop.call(this, event, ui);
+      }
 
-        if (this.options.draggable.stop) {
-          this.options.draggable.stop.call(this, event, ui);
-        }
-
-        this.$previewHolder.remove();
-
-        this.$player = null;
-        this.$helper = null;
+      this.$player = null;
+      this.$helper = null;
     };
 
 
