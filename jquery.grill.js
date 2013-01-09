@@ -190,7 +190,7 @@
       current = this.indexForPosition(this.$previewHolder.previousPosition),
       temp = null;
 
-      log('previous:' + previous + ' now:' + current);
+      //log('previous:' + previous + ' now:' + current);
       // remove from previous location
       temp = this.$widgets.splice(previous, 1)[0];
       this.$widgets.splice(current, 0, temp);
@@ -198,7 +198,7 @@
       this.$player.removeClass('dtm-panel-inmotion').removeAttr('style');
       this.$previewHolder.replaceWith(this.$player);
 
-      log(this.$widgets)
+      //log(this.$widgets)
       if (this.options.draggable.stop) {
         this.options.draggable.stop.call(this, event, ui);
       }
