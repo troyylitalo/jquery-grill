@@ -82,6 +82,7 @@
     */
     fn.getGridSetup = function() {
       var i;
+      this.gridSetup = [];
       for (i = 0; i < this.$widgets.length; i++) {
         this.gridSetup.push(parseInt(this.$widgets[i].className.match(/grid(\d+)/i)[1]));
       }
@@ -199,6 +200,9 @@
       // remove from previous location
       temp = this.$widgets.splice(previous, 1)[0];
       this.$widgets.splice(current, 0, temp);
+
+      // update grid sizes
+      this.getGridSetup();
 
       this.$player.removeClass('dtm-panel-inmotion').removeAttr('style');
       this.$previewHolder.replaceWith(this.$player);
