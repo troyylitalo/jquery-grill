@@ -75,10 +75,15 @@
       this.draggable();
     };
 
+
+    /**
+    * Get grid size of each available widget
+    *
+    */
     fn.getGridSetup = function() {
-      var i = 0;
-      for (i; i < this.$widgets.length; i++) {
-        this.gridSetup.push(parseInt(this.$widgets[0].className.match(/grid(\d+)/i)[1]));
+      var i;
+      for (i = 0; i < this.$widgets.length; i++) {
+        this.gridSetup.push(parseInt(this.$widgets[i].className.match(/grid(\d+)/i)[1]));
       }
     }
 
@@ -135,7 +140,7 @@
       this.$previewHolder.previousPosition = this.getQuadrantPosition(this.$player.coordinates);
       this.$previewHolder.startPosition = this.$previewHolder.previousPosition;
 
-      //log('Begin at:' + this.indexForPosition(this.$previewHolder.previousPosition))
+      // log('Begin at:' + this.indexForPosition(this.$previewHolder.previousPosition))
       // initial absolute position for dragged object
       // otherwise it will jump to 0,0
       this.$player.css({
@@ -242,6 +247,7 @@
     */
     fn.relocatePlaceholderToPosition = function(position) {
       var newIndex = this.indexForPosition(position);
+
       if (newIndex == 0) {
         this.$el.prepend(this.$previewHolder);
       }
@@ -269,14 +275,33 @@
     * @return {int} Returns integer index value
     */
     fn.indexForPosition = function(position) {
-      var i = 0, occupiedBy = null, fancyIndex = position.row * 2 + position.col;
 
-      if (fancyIndex < this.gridSetup.length) {
-        occupiedBy = this.gridSetup[fancyIndex];
-         return (occupiedBy === 6) ? fancyIndex : fancyIndex - 1;
+      var i = 0, 
+          size,
+          occupiedBy = null,
+          realIndex = position.row * 2 + position.col,
+          adjustedIndex = 0;
+
+      if (realIndex <= 0) {
+        // place at first index!
+        return 0;
+      }
+      else if (realIndex < this.gridSetup.length) {
+
+        while (i < realIndex && i < this.gridSetup.length) {
+          size = this.gridSetup[i];
+          i = i + (size / 6);
+          adjustedIndex++;
+        }
+
+        if (position.col > 0 && (this.gridSetup[realIndex - 1] === 12)) {
+          adjustedIndex--;
+        }
+
+        return adjustedIndex;
       }
       else {
-        // probably last element
+        // probably last element or beyond so use last index
         return this.gridSetup.length - 1;
       }
     };
@@ -310,4 +335,5 @@
     $.Grill = fn;
 
 }(jQuery, window, document));
+
 
